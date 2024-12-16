@@ -1,82 +1,9 @@
 ﻿@page "/tasklist"
 
-@inject AppDbContext DbContext
-
 <PageTitle>Task List</PageTitle>
 
 <h3>Task List</h3>
 
-<!-- Dropdown for selecting a project -->
-<select @bind="selectedProjectId" class="form-select mb-3">
-    <option value="">-- Select a Project --</option>
-    @foreach (var project in Projects) {
-        <option value="@project.Id">@project.Projectname</option>
-    }
-</select>
-
-<!-- Placeholder for the Kanban Board -->
-@if (SelectedProject != null) {
-    <div class="kanban-board">
-        <h4>@SelectedProject.Projectname - Task Board</h4>
-        <div class="kanban-columns">
-            <div class="kanban-column">
-                <h5>To Do</h5>
-                @foreach (var task in ToDoTasks) {
-                    <div class="kanban-card">@task.Taskname</div>
-                }
-            </div>
-            <div class="kanban-column">
-                <h5>In Progress</h5>
-                @foreach (var task in InProgressTasks) {
-                    <div class="kanban-card">@task.Taskname</div>
-                }
-            </div>
-            <div class="kanban-column">
-                <h5>Done</h5>
-                @foreach (var task in DoneTasks) {
-                    <div class="kanban-card">@task.Taskname</div>
-                }
-            </div>
-        </div>
-    </div>
-}
-else {
-    <p>Please select a project to view the task board.</p>
-}
-
 @code {
-    private List<Project> Projects { get; set; } = new List<Project>();
-    private int? selectedProjectId { get; set; }
-    private Project? SelectedProject { get; set; }
-    private List<Projecttask> Tasks { get; set; } = new List<Projecttask>();
 
-    // Filtered task lists for different Kanban stages
-    private List<Projecttask> ToDoTasks => Tasks.Where(t => t.Stage == 1).ToList();
-    private List<Projecttask> InProgressTasks => Tasks.Where(t => t.Stage == 2).ToList();
-    private List<Projecttask> DoneTasks => Tasks.Where(t => t.Stage == 3).ToList();
-
-    protected override async Task OnInitializedAsync () {
-        await LoadProjectsAsync();
-    }
-
-    private async Task LoadProjectsAsync () {
-        Projects = await DbContext.Projects.ToListAsync();
-    }
-
-    private async Task OnProjectSelected (ChangeEventArgs e) {
-        if (int.TryParse(e.Value?.ToString(), out int projectId)) {
-            SelectedProject = Projects.FirstOrDefault(p => p.Id == projectId);
-            await LoadTasksAsync(projectId);
-        }
-        else {
-            SelectedProject = null;
-            Tasks.Clear();
-        }
-    }
-
-    private async Task LoadTasksAsync (int projectId) {
-        Tasks = await DbContext.Projecttasks
-            .Where(t => t.Projectid == projectId)
-            .ToListAsync();
-    }
 }
