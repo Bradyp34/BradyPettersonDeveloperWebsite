@@ -4,6 +4,7 @@
 @using BradyPettersonDeveloperWebsite.Models
 @using Microsoft.EntityFrameworkCore
 @inject AppDbContext DbContext
+@inject NavigationManager NavigationManager
 
 <PageTitle>Task List</PageTitle>
 
@@ -41,6 +42,10 @@
                 }
             </div>
         </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" @onclick="NavigateToNewTask">New Task</button>
     </div>
 }
 else {
@@ -85,5 +90,9 @@ else {
         Tasks = await DbContext.Projecttasks
             .Where(t => t.Projectid == projectId)
             .ToListAsync();
+    }
+
+    private void NavigateToNewTask () {
+        NavigationManager.NavigateTo("/newTask");
     }
 }
