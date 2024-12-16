@@ -1,31 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace BradyPettersonDeveloperWebsite.Models;
 
+[Table("task")]
 public partial class Task
 {
-    public int? Id { get; set; }
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
 
-    public string? TaskName { get; set; }
+    [Column("taskname")]
+    [StringLength(255)]
+    public string Taskname { get; set; } = null!;
 
-    public bool? Completed { get; set; }
-
+    [Column("started", TypeName = "timestamp without time zone")]
     public DateTime? Started { get; set; }
 
+    [Column("due", TypeName = "timestamp without time zone")]
     public DateTime? Due { get; set; }
 
-    public int? AssigneeId { get; set; }
+    [Column("assigneeid")]
+    public int? Assigneeid { get; set; }
 
+    [Column("details")]
     public string? Details { get; set; }
 
+    [Column("stage")]
     public int? Stage { get; set; }
 
-    public int? ProjectId { get; set; }
+    [Column("projectid")]
+    public int? Projectid { get; set; }
 
-    public virtual ICollection<FeatureTask> FeatureTasks { get; set; } = new List<FeatureTask>();
+    [ForeignKey("Assigneeid")]
+    [InverseProperty("Tasks")]
+    public virtual Siteuser? Assignee { get; set; }
 
+    [InverseProperty("Task")]
+    public virtual ICollection<Featuretask> Featuretasks { get; set; } = new List<Featuretask>();
+
+    [ForeignKey("Projectid")]
+    [InverseProperty("Tasks")]
     public virtual Project? Project { get; set; }
 
-    public virtual ICollection<TaskUser> TaskUsers { get; set; } = new List<TaskUser>();
+    [InverseProperty("Task")]
+    public virtual ICollection<Taskuser> Taskusers { get; set; } = new List<Taskuser>();
 }

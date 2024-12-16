@@ -1,17 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace BradyPettersonDeveloperWebsite.Models;
 
-public partial class TaskUser
+[Table("taskuser")]
+public partial class Taskuser
 {
-    public int? Id { get; set; }
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
 
-    public int? TaskId { get; set; }
+    [Column("taskid")]
+    public int? Taskid { get; set; }
 
-    public int? UserId { get; set; }
+    [Column("userid")]
+    public int? Userid { get; set; }
 
+    [ForeignKey("Taskid")]
+    [InverseProperty("Taskusers")]
     public virtual Task? Task { get; set; }
 
-    public virtual User? User { get; set; }
+    [ForeignKey("Userid")]
+    [InverseProperty("Taskusers")]
+    public virtual Siteuser? User { get; set; }
 }
