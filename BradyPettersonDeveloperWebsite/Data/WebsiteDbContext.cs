@@ -1,4 +1,4 @@
 ﻿namespace BradyPettersonDeveloperWebsite.Data {
-	public class TaskDbContext {
+	public class WebsiteDbContext {
 	}
 }
