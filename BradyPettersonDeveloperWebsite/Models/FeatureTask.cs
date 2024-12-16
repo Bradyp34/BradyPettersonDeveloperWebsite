@@ -28,5 +28,5 @@ public partial class Featuretask
 
     [ForeignKey("Taskid")]
     [InverseProperty("Featuretasks")]
-    public virtual Task? Task { get; set; }
+    public virtual Projecttask? Task { get; set; }
 }

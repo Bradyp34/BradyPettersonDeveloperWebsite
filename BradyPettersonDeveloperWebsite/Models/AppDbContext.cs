@@ -21,11 +21,11 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Project> Projects { get; set; }
 
+    public virtual DbSet<Projecttask> Projecttasks { get; set; }
+
     public virtual DbSet<Projectuser> Projectusers { get; set; }
 
     public virtual DbSet<Siteuser> Siteusers { get; set; }
-
-    public virtual DbSet<Task> Tasks { get; set; }
 
     public virtual DbSet<Taskuser> Taskusers { get; set; }
 
@@ -54,6 +54,17 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("project_pkey");
         });
 
+        modelBuilder.Entity<Projecttask>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("task_pkey");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('task_id_seq'::regclass)");
+
+            entity.HasOne(d => d.Assignee).WithMany(p => p.Projecttasks).HasConstraintName("task_assigneeid_fkey");
+
+            entity.HasOne(d => d.Project).WithMany(p => p.Projecttasks).HasConstraintName("task_projectid_fkey");
+        });
+
         modelBuilder.Entity<Projectuser>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("projectuser_pkey");
@@ -68,15 +79,6 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("User_pkey");
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"User_id_seq\"'::regclass)");
-        });
-
-        modelBuilder.Entity<Task>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("task_pkey");
-
-            entity.HasOne(d => d.Assignee).WithMany(p => p.Tasks).HasConstraintName("task_assigneeid_fkey");
-
-            entity.HasOne(d => d.Project).WithMany(p => p.Tasks).HasConstraintName("task_projectid_fkey");
         });
 
         modelBuilder.Entity<Taskuser>(entity =>

@@ -29,11 +29,11 @@ public partial class Siteuser
     [StringLength(255)]
     public string? Position { get; set; }
 
+    [InverseProperty("Assignee")]
+    public virtual ICollection<Projecttask> Projecttasks { get; set; } = new List<Projecttask>();
+
     [InverseProperty("User")]
     public virtual ICollection<Projectuser> Projectusers { get; set; } = new List<Projectuser>();
-
-    [InverseProperty("Assignee")]
-    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 
     [InverseProperty("User")]
     public virtual ICollection<Taskuser> Taskusers { get; set; } = new List<Taskuser>();

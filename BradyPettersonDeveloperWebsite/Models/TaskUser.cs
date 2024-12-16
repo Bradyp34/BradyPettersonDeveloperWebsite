@@ -21,7 +21,7 @@ public partial class Taskuser
 
     [ForeignKey("Taskid")]
     [InverseProperty("Taskusers")]
-    public virtual Task? Task { get; set; }
+    public virtual Projecttask? Task { get; set; }
 
     [ForeignKey("Userid")]
     [InverseProperty("Taskusers")]

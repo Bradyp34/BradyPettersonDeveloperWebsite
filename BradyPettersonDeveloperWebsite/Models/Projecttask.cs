@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BradyPettersonDeveloperWebsite.Models;
 
-[Table("task")]
-public partial class Task
+[Table("projecttask")]
+public partial class Projecttask
 {
     [Key]
     [Column("id")]
@@ -36,14 +36,14 @@ public partial class Task
     public int? Projectid { get; set; }
 
     [ForeignKey("Assigneeid")]
-    [InverseProperty("Tasks")]
+    [InverseProperty("Projecttasks")]
     public virtual Siteuser? Assignee { get; set; }
 
     [InverseProperty("Task")]
     public virtual ICollection<Featuretask> Featuretasks { get; set; } = new List<Featuretask>();
 
     [ForeignKey("Projectid")]
-    [InverseProperty("Tasks")]
+    [InverseProperty("Projecttasks")]
     public virtual Project? Project { get; set; }
 
     [InverseProperty("Task")]

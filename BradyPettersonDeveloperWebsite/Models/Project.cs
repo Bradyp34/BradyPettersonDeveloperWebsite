@@ -21,8 +21,8 @@ public partial class Project
     public string? Description { get; set; }
 
     [InverseProperty("Project")]
-    public virtual ICollection<Projectuser> Projectusers { get; set; } = new List<Projectuser>();
+    public virtual ICollection<Projecttask> Projecttasks { get; set; } = new List<Projecttask>();
 
     [InverseProperty("Project")]
-    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+    public virtual ICollection<Projectuser> Projectusers { get; set; } = new List<Projectuser>();
 }
