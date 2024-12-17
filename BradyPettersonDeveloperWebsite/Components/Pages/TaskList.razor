@@ -104,15 +104,13 @@ else {
     private RenderFragment RenderKanbanColumn (string title, List<Projecttask> tasks, string headerClass) => @<div class="kanban-column">
         <h5 class="@headerClass text-center mb-3">@title</h5>
         <div class="kanban-column-content">
-            @if (tasks.Any())
-        {
-            @foreach (var task in tasks)
-        {
-            <button class="btn btn-outline-secondary mb-2 w-100" @onclick="() => OpenTaskModal(task)">
-                @task.Taskname
-            </button>
-        }
-        }
+            @if (tasks.Any()){
+                @foreach (var task in tasks){
+                    <button class="btn btn-outline-secondary mb-2 w-100" @onclick="() => OpenTaskModal(task)">
+                        @task.Taskname
+                    </button>
+                }
+            }
         else
         {
             <div class="kanban-card empty-task">No tasks</div>

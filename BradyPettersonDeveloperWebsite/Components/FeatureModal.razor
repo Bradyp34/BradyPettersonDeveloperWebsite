@@ -1,0 +1,59 @@
+﻿@rendermode InteractiveServer
+@inject AppDbContext DbContext
+@using BradyPettersonDeveloperWebsite.Models
+@using Microsoft.EntityFrameworkCore
+
+
+
+@code {
+    [Parameter] 
+    public EventCallback<Feature> OnFeatureSaved { get; set; }
+
+    public bool IsVisible { get; set; }
+    public int ProjectId { get; set; }
+
+    public Feature Feature { get; set; } = new Feature();
+    public List<Siteuser> SiteUsers { get; set; } = new List<Siteuser>();
+    public List<Projectuser> ProjectUsers { get; set; } = new List<Projectuser>();
+
+    public async void Show (int projectid) {
+        await LoadSiteUsersAsync();
+        await LoadProjectUsersAsync();
+        IsVisible = true;
+        ProjectId = projectid;
+        Feature = new Feature();
+        StateHasChanged();
+    }
+    
+    public async void Show (Feature feature) {
+        await LoadSiteUsersAsync();
+        await LoadProjectUsersAsync();
+        IsVisible = true;
+        ProjectId = feature.Projectid;
+        Feature = feature;
+        StateHasChanged();
+    }
+
+    public void CloseModal () {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadSiteUsersAsync () {
+        try {
+            SiteUsers = await DbContext.Siteusers.ToListAsync();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error loading site users: {ex.Message}");
+        }
+    }
+
+    private async Task LoadProjectUsersAsync () {
+        try {
+            ProjectUsers = await DbContext.Projectusers.ToListAsync();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error loading project users: {ex.Message}");
+        }
+    }
+}

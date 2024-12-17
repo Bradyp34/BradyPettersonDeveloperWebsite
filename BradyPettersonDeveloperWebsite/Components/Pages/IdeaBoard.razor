@@ -21,6 +21,11 @@
 
 @if (SelectedProject != null) {
     <h2>@SelectedProject.Projectname Project Ideas</h2>
+    <div class="d-flex justify-content-center mt-4">
+        <button class="btn btn-success" @onclick="() => OpenFeatureModal(selectedProjectId ?? 0)">
+            <i class="bi bi-plus-lg"></i> New Task
+        </button>
+    </div>
     <div class="Idea-Board">
         @foreach (var feature in Features) {
             <div class="card mb-3">
@@ -36,7 +41,11 @@
 
 }
 
+<FeatureModal @ref="featureModal" OnFeatureSaved="HandleFeatureSaved" />
+
 @code {
+    private FeatureModal? featureModal;
+
     public List<Project> Projects { get; set; } = new();
     private List<Feature> Features { get; set; } = new();
 
@@ -49,6 +58,21 @@
 
     private async Task LoadProjectsAsync () {
         Projects = await DbContext.Projects.ToListAsync();
+    }
+
+    private void OpenFeatureModal (Feature feature) {
+        featureModal?.Show(feature);
+    }
+
+    private void OpenFeatureModal (int projectid) {
+        featureModal?.Show(projectid);
+    }
+
+    private async Task HandleFeatureSaved () {
+        if (selectedProjectId.HasValue) {
+            await LoadFeaturesAsync(selectedProjectId.Value);
+            StateHasChanged();
+        }
     }
 
     private async Task OnProjectSelected (ChangeEventArgs e) {
@@ -71,4 +95,21 @@
         .Where(t => t.Projectid == projectId)
         .ToListAsync();
     }
+
+    private RenderFragment RenderMoscowColumn (string title, List<Feature> features, string headerClass) => @<div class="kanban-column">
+        <h5 class="@headerClass text-center mb-3">@title</h5>
+        <div class="kanban-column-content">
+            @if (features.Any()){
+            @foreach (var feature in features){
+            <button class="btn btn-outline-secondary mb-2 w-100" @onclick="() => OpenFeatureModal(feature)">
+                @feature.Featurename
+            </button>
+        }
+        }
+        else
+        {
+            <div class="kanban-card empty-task">No tasks</div>
+        }
+        </div>
+    </div>;
 }
