@@ -29,7 +29,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Taskuser> Taskusers { get; set; }
 
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Feature>(entity =>
@@ -42,6 +42,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Featurename).HasColumnName("featurename");
             entity.Property(e => e.Moscow).HasColumnName("moscow");
+            entity.Property(e => e.Projectid).HasColumnName("projectid");
         });
 
         modelBuilder.Entity<Featuretask>(entity =>

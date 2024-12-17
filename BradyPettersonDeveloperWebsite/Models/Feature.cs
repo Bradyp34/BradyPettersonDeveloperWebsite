@@ -12,4 +12,6 @@ public partial class Feature
     public string? Description { get; set; }
 
     public int? Moscow { get; set; }
+
+    public int Projectid { get; set; }
 }

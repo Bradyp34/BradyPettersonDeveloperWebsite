@@ -1,11 +1,49 @@
-﻿@page "/ideaBoard"
+﻿@page "/ideaboard"
 @rendermode InteractiveServer
 
+@using BradyPettersonDeveloperWebsite.Models
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext DbContext
+@inject NavigationManager NavigationManager
 
 <PageTitle>Idea Board</PageTitle>
 
 <h3>Idea Board</h3>
 
-@code {
+<p>This page displays a board for feature ideas for a selected project. Select a project from the dropdown to view the ideas for that project.</p>
 
+<select class="form-select mb-3" @onchange="OnProjectSelected">
+    <option value="">-- Select a Project --</option>
+    @foreach (var project in Projects) {
+        <option value="@project.Id">@project.Projectname</option>
+    }
+</select>
+
+@code {
+    public List<Project> Projects { get; set; } = new();
+    private List<Feature> Features { get; set; } = new();
+
+    private int? selectedProjectId { get; set; }
+    private Project? SelectedProject { get; set; }
+
+    private async Task OnProjectSelected (ChangeEventArgs e) {
+        if (int.TryParse(e.Value?.ToString(), out var projectId)) {
+            selectedProjectId = projectId;
+            SelectedProject = Projects.FirstOrDefault(p => p.Id == projectId);
+            await LoadFeaturesAsync(projectId);
+        }
+        else {
+            selectedProjectId = null;
+            SelectedProject = null;
+            Features.Clear();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task LoadFeaturesAsync (int projectId) {
+        Features = await DbContext.Features
+        .Where(t => t.Projectid == projectId)
+        .ToListAsync();
+    }
 }
