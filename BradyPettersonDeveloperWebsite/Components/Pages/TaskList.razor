@@ -21,39 +21,32 @@
 
 @if (SelectedProject != null) {
     <div class="kanban-board">
-        <h4>@SelectedProject.Projectname - Task Board</h4>
-        <div class="kanban-columns">
-            <div class="kanban-column">
-                <h5>To Do</h5>
-                @foreach (var task in ToDoTasks) {
-                    <div class="kanban-card">@task.Taskname</div>
-                }
-            </div>
-            <div class="kanban-column">
-                <h5>In Progress</h5>
-                @foreach (var task in InProgressTasks) {
-                    <div class="kanban-card">@task.Taskname</div>
-                }
-            </div>
-            <div class="kanban-column">
-                <h5>Done</h5>
-                @foreach (var task in DoneTasks) {
-                    <div class="kanban-card">@task.Taskname</div>
-                }
-            </div>
+        <h4 class="text-center mb-4">@SelectedProject.Projectname - Task Board</h4>
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-success" @onclick="() => OpenTaskModal(selectedProjectId ?? 0)">
+                <i class="bi bi-plus-lg"></i> New Task
+            </button>
         </div>
-    </div>
-
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-primary" @onclick="NavigateToNewTask">New Task</button>
+        <br>
+        <div class="kanban-columns">
+            @RenderKanbanColumn("To Do", ToDoTasks, "text-primary")
+            @RenderKanbanColumn("In Progress", InProgressTasks, "text-warning")
+            @RenderKanbanColumn("In Review", InReviewTasks, "text-info")
+            @RenderKanbanColumn("Done", DoneTasks, "text-success")
+        </div>
     </div>
 }
 else {
     <p>Please select a project to view the task board.</p>
 }
 
+<!-- Import the modal with the callback -->
+<TaskModal @ref="taskModal" OnTaskSaved="HandleTaskSaved" />
+
 @code {
-    private List<Project> Projects { get; set; } = new();
+    private TaskModal? taskModal;
+
+    public List<Project> Projects { get; set; } = new();
     private List<Projecttask> Tasks { get; set; } = new();
 
     private int? selectedProjectId { get; set; }
@@ -61,7 +54,8 @@ else {
 
     private List<Projecttask> ToDoTasks => Tasks.Where(t => t.Stage == 1).ToList();
     private List<Projecttask> InProgressTasks => Tasks.Where(t => t.Stage == 2).ToList();
-    private List<Projecttask> DoneTasks => Tasks.Where(t => t.Stage == 3).ToList();
+    private List<Projecttask> InReviewTasks => Tasks.Where(t => t.Stage == 3).ToList();
+    private List<Projecttask> DoneTasks => Tasks.Where(t => t.Stage == 4).ToList();
 
     protected override async Task OnInitializedAsync () {
         await LoadProjectsAsync();
@@ -88,11 +82,41 @@ else {
 
     private async Task LoadTasksAsync (int projectId) {
         Tasks = await DbContext.Projecttasks
-            .Where(t => t.Projectid == projectId)
-            .ToListAsync();
+        .Where(t => t.Projectid == projectId)
+        .ToListAsync();
     }
 
-    private void NavigateToNewTask () {
-        NavigationManager.NavigateTo("/newTask");
+    private void OpenTaskModal (Projecttask task) {
+        taskModal?.Show(task);
     }
+
+    private void OpenTaskModal (int projectId) {
+        taskModal?.Show(projectId);
+    }
+
+    private async Task HandleTaskSaved () {
+        if (selectedProjectId.HasValue) {
+            await LoadTasksAsync(selectedProjectId.Value);
+            StateHasChanged();
+        }
+    }
+
+    private RenderFragment RenderKanbanColumn (string title, List<Projecttask> tasks, string headerClass) => @<div class="kanban-column">
+        <h5 class="@headerClass text-center mb-3">@title</h5>
+        <div class="kanban-column-content">
+            @if (tasks.Any())
+        {
+            @foreach (var task in tasks)
+        {
+            <button class="btn btn-outline-secondary mb-2 w-100" @onclick="() => OpenTaskModal(task)">
+                @task.Taskname
+            </button>
+        }
+        }
+        else
+        {
+            <div class="kanban-card empty-task">No tasks</div>
+        }
+        </div>
+    </div>;
 }

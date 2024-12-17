@@ -3,7 +3,7 @@ using Xunit;
 using BradyPettersonDeveloperWebsite.Components;
 using BradyPettersonDeveloperWebsite.Components.Layout;
 
-public class NavMenuTests : TestContext {
+public class LayoutTests : TestContext {
     //create unit tests here
 
 /*

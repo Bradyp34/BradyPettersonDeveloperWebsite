@@ -29,62 +29,93 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Taskuser> Taskusers { get; set; }
 
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Feature>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("feature_pkey");
+
+            entity.ToTable("feature");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Featurename).HasColumnName("featurename");
+            entity.Property(e => e.Moscow).HasColumnName("moscow");
         });
 
         modelBuilder.Entity<Featuretask>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("featuretask_pkey");
 
-            entity.HasOne(d => d.Feature).WithMany(p => p.Featuretasks).HasConstraintName("featuretask_featureid_fkey");
+            entity.ToTable("featuretask");
 
-            entity.HasOne(d => d.Task).WithMany(p => p.Featuretasks).HasConstraintName("featuretask_taskid_fkey");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Featureid).HasColumnName("featureid");
+            entity.Property(e => e.Taskid).HasColumnName("taskid");
         });
 
         modelBuilder.Entity<Project>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("project_pkey");
+
+            entity.ToTable("project");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Projectname).HasColumnName("projectname");
         });
 
         modelBuilder.Entity<Projecttask>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("task_pkey");
+            entity.HasKey(e => e.Id).HasName("projecttask_pkey");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("nextval('task_id_seq'::regclass)");
+            entity.ToTable("projecttask");
 
-            entity.HasOne(d => d.Assignee).WithMany(p => p.Projecttasks).HasConstraintName("task_assigneeid_fkey");
-
-            entity.HasOne(d => d.Project).WithMany(p => p.Projecttasks).HasConstraintName("task_projectid_fkey");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Assigneeid).HasColumnName("assigneeid");
+            entity.Property(e => e.Details).HasColumnName("details");
+            entity.Property(e => e.Due).HasColumnName("due");
+            entity.Property(e => e.Projectid).HasColumnName("projectid");
+            entity.Property(e => e.Stage).HasColumnName("stage");
+            entity.Property(e => e.Started).HasColumnName("started");
+            entity.Property(e => e.Taskname).HasColumnName("taskname");
         });
 
         modelBuilder.Entity<Projectuser>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("projectuser_pkey");
 
-            entity.HasOne(d => d.Project).WithMany(p => p.Projectusers).HasConstraintName("projectuser_projectid_fkey");
+            entity.ToTable("projectuser");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Projectusers).HasConstraintName("projectuser_userid_fkey");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Projectid).HasColumnName("projectid");
+            entity.Property(e => e.Userid).HasColumnName("userid");
         });
 
         modelBuilder.Entity<Siteuser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("User_pkey");
+            entity.HasKey(e => e.Id).HasName("siteuser_pkey");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"User_id_seq\"'::regclass)");
+            entity.ToTable("siteuser");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Fullname).HasColumnName("fullname");
+            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Position).HasColumnName("position");
+            entity.Property(e => e.Username).HasColumnName("username");
         });
 
         modelBuilder.Entity<Taskuser>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("taskuser_pkey");
 
-            entity.HasOne(d => d.Task).WithMany(p => p.Taskusers).HasConstraintName("taskuser_taskid_fkey");
+            entity.ToTable("taskuser");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Taskusers).HasConstraintName("taskuser_userid_fkey");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Taskid).HasColumnName("taskid");
+            entity.Property(e => e.Userid).HasColumnName("userid");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -1,0 +1,133 @@
+﻿@rendermode InteractiveServer
+@inject AppDbContext DbContext
+@using BradyPettersonDeveloperWebsite.Models
+@using Microsoft.EntityFrameworkCore
+
+<div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
+    <div class="modal-box">
+        <div class="modal-header">
+            @if (Task.Id != 0) {
+                <h5 class="modal-title">Edit Task</h5>
+            }
+            else {
+                <h5 class="modal-title">New Task</h5>
+            }
+            <button type="button" class="btn-close" @onclick="CloseModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            @if (Task.Id != 0) {
+                <h1>ID: @Task.Id</h1>
+            }
+            <h3>@Task.Taskname</h3>
+
+            <div class="mb-3">
+                <label for="taskName" class="form-label">Task Name</label>
+                <input type="text" class="form-control" id="taskName" @bind="Task.Taskname" />
+            </div>
+
+            <div class="mb-3">
+                <label for="taskDetails" class="form-label">Details</label>
+                <textarea class="form-control" id="taskDetails" @bind="Task.Details"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="taskAssignee" class="form-label">Assignee</label>
+                <select class="form-select" id="taskAssignee" @bind="Task.Assigneeid">
+                    <option value="">-- Select an Assignee --</option>
+                    @foreach (var user in SiteUsers) {
+                        <option value="@user.Id">@($"{user.Fullname} - {user.Position}")</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="taskStage" class="form-label">Stage</label>
+                <select class="form-select" id="taskStage" @bind="Task.Stage">
+                    <option value="1">To Do</option>
+                    <option value="2">In Progress</option>
+                    <option value="3">In Review</option>
+                    <option value="4">Done</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" @bind="Task.Started" />
+            </div>
+
+            <div class="mb-3">
+                <label for="endDate" class="form-label">Due Date</label>
+                <input type="date" class="form-control" id="endDate" @bind="Task.Due" />
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" @onclick="SaveChanges">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnTaskSaved { get; set; }
+
+    public bool IsVisible { get; set; } = false;
+    public Projecttask Task { get; set; } = new();
+    public List<Siteuser> SiteUsers { get; set; } = new();
+
+    protected override async Task OnInitializedAsync () {
+        await LoadSiteUsersAsync();
+    }
+
+    private async Task LoadSiteUsersAsync () {
+        try {
+            SiteUsers = await DbContext.Siteusers.ToListAsync();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error loading site users: {ex.Message}");
+        }
+    }
+
+    public void Show (Projecttask task) {
+        Task = task;
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void Show (int projectId) {
+        Task = new Projecttask { Projectid = projectId };
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void CloseModal () {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    public async Task SaveChanges () {
+        try {
+            if (Task.Id == 0) {
+                // New task: add to DbContext
+                await DbContext.Projecttasks.AddAsync(Task);
+            }
+            else {
+                // Existing task: update
+                DbContext.Projecttasks.Update(Task);
+            }
+
+            await DbContext.SaveChangesAsync();
+
+            // Notify parent component that a task has been saved
+            if (OnTaskSaved.HasDelegate) {
+                await OnTaskSaved.InvokeAsync(null);
+            }
+
+            CloseModal();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error saving task: {ex.Message}");
+            // Optionally, display an error message to the user
+        }
+    }
+}
