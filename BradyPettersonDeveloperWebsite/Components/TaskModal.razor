@@ -75,10 +75,6 @@
     public Projecttask Task { get; set; } = new();
     public List<Siteuser> SiteUsers { get; set; } = new();
 
-    protected override async Task OnInitializedAsync () {
-        await LoadSiteUsersAsync();
-    }
-
     private async Task LoadSiteUsersAsync () {
         try {
             SiteUsers = await DbContext.Siteusers.ToListAsync();
