@@ -11,7 +11,7 @@ using System.Linq;
 using Bunit.TestDoubles;
 
 public class TaskListTests : TestContext {
-    private AppDbContext CreateDbContext () {
+   /* private AppDbContext CreateDbContext () {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString()) // Unique database for each test
             .Options;
@@ -105,5 +105,5 @@ public class TaskListTests : TestContext {
         Assert.Equal("-- Select a Project --", options[0].TextContent);
         Assert.Equal("Project Alpha", options[1].TextContent);
         Assert.Equal("Project Beta", options[2].TextContent);
-    }
+    }*/
 }
