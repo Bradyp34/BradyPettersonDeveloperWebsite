@@ -1,6 +1,12 @@
 ﻿@page "/UserControl"
+@rendermode InteractiveServer
 
-<h3>User Control Center</h3>
+@using BradyPettersonDeveloperWebsite.Models
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<h1>User Control Center</h1>
 
 @code {
 
