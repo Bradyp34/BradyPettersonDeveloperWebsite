@@ -88,13 +88,15 @@
         }
     }
 
-    public void Show (Projecttask task) {
+    public async void Show (Projecttask task) {
+        await LoadSiteUsersAsync();
         Task = task;
         IsVisible = true;
         StateHasChanged();
     }
 
-    public void Show (int projectId) {
+    public async void Show (int projectId) {
+        await LoadSiteUsersAsync();
         Task = new Projecttask { Projectid = projectId };
         IsVisible = true;
         StateHasChanged();
