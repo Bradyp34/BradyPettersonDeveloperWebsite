@@ -3,7 +3,50 @@
 @using BradyPettersonDeveloperWebsite.Models
 @using Microsoft.EntityFrameworkCore
 
+<div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
+    <div class="modal-box">
+        <div class="modal-header">
+            @if (Feature.Id != 0) {
+                <h5 class="modal-title">Edit Task</h5>
+            }
+            else {
+                <h5 class="modal-title">New Task</h5>
+            }
+            <button type="button" class="btn-close" @onclick="CloseModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            @if (Feature.Id != 0) {
+                <h1>ID: @Feature.Id</h1>
+            }
+            <h3>@Feature.Featurename</h3>
 
+            <div class="mb-3">
+                <label for="featureName" class="form-label">Feature Name</label>
+                <input type="text" class="form-control" id="featureName" @bind="Feature.Featurename" />
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" @bind="Feature.Description" />
+            </div>
+
+            <div class="mb-3">
+                <label for="featureDesignation" class="form-label">MoSCoW</label>
+                <select class="form-select" id="featureDesignation" @bind="Feature.Moscow">
+                    <option value="">-- Select a MoSCoW Designation --</option>
+                    <option value="1">Must</option>
+                    <option value="2">Should</option>
+                    <option value="3">Could</option>
+                    <option value="4">Won't</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" @onclick="SaveChanges">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter] 
@@ -54,6 +97,32 @@
         }
         catch (Exception ex) {
             Console.WriteLine($"Error loading project users: {ex.Message}");
+        }
+    }
+
+    public async Task SaveChanges () {
+        try {
+            if (Feature.Id == 0) {
+                // New task: add to DbContext
+                await DbContext.Features.AddAsync(Feature);
+            }
+            else {
+                // Existing task: update
+                DbContext.Features.Update(Feature);
+            }
+
+            await DbContext.SaveChangesAsync();
+
+            // Notify parent component that a task has been saved
+            if (OnFeatureSaved.HasDelegate) {
+                await OnFeatureSaved.InvokeAsync(null);
+            }
+
+            CloseModal();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error saving task: {ex.Message}");
+            // Optionally, display an error message to the user
         }
     }
 }

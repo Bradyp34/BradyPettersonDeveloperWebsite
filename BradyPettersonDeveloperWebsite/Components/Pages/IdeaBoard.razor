@@ -20,25 +20,26 @@
 </select>
 
 @if (SelectedProject != null) {
-    <h2>@SelectedProject.Projectname Project Ideas</h2>
+    <h2>@SelectedProject.Projectname - Idea Board</h2>
+
     <div class="d-flex justify-content-center mt-4">
         <button class="btn btn-success" @onclick="() => OpenFeatureModal(selectedProjectId ?? 0)">
-            <i class="bi bi-plus-lg"></i> New Task
+            <i class="bi bi-plus-lg"></i> New Idea
         </button>
     </div>
-    <div class="Idea-Board">
-        @foreach (var feature in Features) {
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">@feature.Featurename</h5>
-                    <p class="card-text">@feature.Description</p>
-                </div>
-            </div>
-        }
-    </div>
-} else {
-    <p>Please select a project to view the idea board.</p>
+    <br />
 
+    <div class="kanban-board">
+        <div class="kanban-columns">
+            @RenderMoscowColumn("Must Have", Features.Where(f => f.Moscow == 1 && f.Projectid == selectedProjectId).ToList(), "text-danger")
+            @RenderMoscowColumn("Should Have", Features.Where(f => f.Moscow == 2 && f.Projectid == selectedProjectId).ToList(), "text-warning")
+            @RenderMoscowColumn("Could Have", Features.Where(f => f.Moscow == 3 && f.Projectid == selectedProjectId).ToList(), "text-success")
+            @RenderMoscowColumn("Won't Have", Features.Where(f => f.Moscow == 4 && f.Projectid == selectedProjectId).ToList(), "text-secondary")
+        </div>
+    </div>
+}
+else {
+    <p>Please select a project to view the idea board.</p>
 }
 
 <FeatureModal @ref="featureModal" OnFeatureSaved="HandleFeatureSaved" />
@@ -64,8 +65,8 @@
         featureModal?.Show(feature);
     }
 
-    private void OpenFeatureModal (int projectid) {
-        featureModal?.Show(projectid);
+    private void OpenFeatureModal (int projectId) {
+        featureModal?.Show(projectId);
     }
 
     private async Task HandleFeatureSaved () {
@@ -99,16 +100,18 @@
     private RenderFragment RenderMoscowColumn (string title, List<Feature> features, string headerClass) => @<div class="kanban-column">
         <h5 class="@headerClass text-center mb-3">@title</h5>
         <div class="kanban-column-content">
-            @if (features.Any()){
-            @foreach (var feature in features){
-            <button class="btn btn-outline-secondary mb-2 w-100" @onclick="() => OpenFeatureModal(feature)">
+            @if (features.Any())
+        {
+            @foreach (var feature in features)
+        {
+            <button class="btn btn-outline-secondary kanban-card" @onclick="() => OpenFeatureModal(feature)">
                 @feature.Featurename
             </button>
         }
         }
         else
         {
-            <div class="kanban-card empty-task">No tasks</div>
+            <div class="kanban-card empty-task">No features</div>
         }
         </div>
     </div>;
