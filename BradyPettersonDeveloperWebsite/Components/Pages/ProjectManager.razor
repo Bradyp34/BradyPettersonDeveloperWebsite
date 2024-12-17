@@ -6,8 +6,60 @@
 @inject AppDbContext DbContext
 @inject NavigationManager NavigationManager
 
-<h3>ProjectManager</h3>
+<PageTitle>Project Manager</PageTitle>
+
+<h3>Project Manager</h3>
+
+<p>This page displays a list of projects. Click on a project name to edit its details.</p>
+
+@if (Projects.Any()) {
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in Projects) {
+                <tr>
+                    <td>
+                        <a href="#" @onclick="() => OpenProjectModal(project)" @onclick:preventDefault>
+                            @project.Projectname
+                        </a>
+                    </td>
+                    <td>@project.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else {
+    <p>No projects found.</p>
+}
+
+<!-- Import the ProjectModal component -->
+<ProjectModal @ref="projectModal" OnProjectSaved="HandleProjectSaved" />
 
 @code {
+    private ProjectModal? projectModal;
 
+    public List<Project> Projects { get; set; } = new();
+
+    protected override async Task OnInitializedAsync () {
+        await LoadProjectsAsync();
+    }
+
+    private async Task LoadProjectsAsync () {
+        Projects = await DbContext.Projects.ToListAsync();
+    }
+
+    private void OpenProjectModal (Project project) {
+        projectModal?.Show(project);
+    }
+
+    private async Task HandleProjectSaved () {
+        await LoadProjectsAsync();
+        StateHasChanged();
+    }
 }

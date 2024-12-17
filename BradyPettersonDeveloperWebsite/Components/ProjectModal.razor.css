@@ -1,0 +1,94 @@
+﻿/* Modal backdrop */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+
+/* Modal box */
+.modal-box {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* Modal header */
+.modal-header {
+    background-color: #053f7a;
+    color: #ffffff;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .modal-header .modal-title {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .modal-header .btn-close {
+        background: none;
+        border: none;
+        color: #ffffff;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+/* Modal body */
+.modal-body {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+}
+
+/* Input styles */
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+    .form-control:focus {
+        border-color: #0056b3;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
+    }
+
+/* Close button */
+.btn-close {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+/* Modal footer */
+.modal-footer {
+    padding: 1rem;
+    text-align: right;
+    background-color: #e9ecef;
+    border-top: 1px solid #dee2e6;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
