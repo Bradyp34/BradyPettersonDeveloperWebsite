@@ -76,7 +76,9 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("projectuser");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.Projectid).HasColumnName("projectid");
             entity.Property(e => e.Userid).HasColumnName("userid");
         });
