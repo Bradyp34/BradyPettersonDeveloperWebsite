@@ -25,6 +25,15 @@
                 ">Project Name</label>
                 <input type="text" class="form-control" id="projectName" @bind="Project.Projectname" />
             </div>
+
+            <div class="mb-3">
+                <label for="projectDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="projectDescription" @bind="Project.Description"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-primary" id="saveButton" @onclick="SaveChanges">Save</button>
+            </div>
         </div>
     </div>
 </div>
@@ -55,13 +64,15 @@
         await LoadSiteUsersAsync();
 
         IsVisible = true;
+        StateHasChanged();
     }
-    
+
     public async void Show (Project project) {
         await LoadProjectUsersAsync();
         await LoadSiteUsersAsync();
         Project = project;
         IsVisible = true;
+        StateHasChanged();
     }
 
     public void CloseModal () {

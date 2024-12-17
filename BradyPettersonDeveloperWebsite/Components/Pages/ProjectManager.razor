@@ -12,10 +12,15 @@
 
 <p>This page displays a list of projects. Click on a project name to edit its details.</p>
 
+<button class="btn btn-success" @onclick="() => OpenProjectModal(0)">
+    <i class="bi bi-plus-lg"></i> New Task
+</button>
+
 @if (Projects.Any()) {
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Project Name</th>
                 <th>Description</th>
             </tr>
@@ -24,9 +29,12 @@
             @foreach (var project in Projects) {
                 <tr>
                     <td>
-                        <a href="#" @onclick="() => OpenProjectModal(project)" @onclick:preventDefault>
+                        @project.Id
+                    </td>
+                    <td>
+                        <button class="btn btn-link p-0" type="button" @onclick="() => OpenProjectModal(project)">
                             @project.Projectname
-                        </a>
+                        </button>
                     </td>
                     <td>@project.Description</td>
                 </tr>
@@ -56,6 +64,10 @@ else {
 
     private void OpenProjectModal (Project project) {
         projectModal?.Show(project);
+    }
+
+    private void OpenProjectModal (int projectid) {
+        projectModal?.Show(projectid);
     }
 
     private async Task HandleProjectSaved () {
