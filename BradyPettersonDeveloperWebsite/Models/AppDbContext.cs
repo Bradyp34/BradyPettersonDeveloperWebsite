@@ -17,8 +17,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Feature> Features { get; set; }
 
-    public virtual DbSet<Featuretask> Featuretasks { get; set; }
-
     public virtual DbSet<Project> Projects { get; set; }
 
     public virtual DbSet<Projecttask> Projecttasks { get; set; }
@@ -43,18 +41,6 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Featurename).HasColumnName("featurename");
             entity.Property(e => e.Moscow).HasColumnName("moscow");
             entity.Property(e => e.Projectid).HasColumnName("projectid");
-        });
-
-        modelBuilder.Entity<Featuretask>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("featuretask_pkey");
-
-            entity.ToTable("featuretask");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Featureid).HasColumnName("featureid");
-            entity.Property(e => e.Taskid).HasColumnName("taskid");
         });
 
         modelBuilder.Entity<Project>(entity =>

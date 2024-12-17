@@ -34,7 +34,7 @@
                 <label for="taskAssignee" class="form-label">Assignee</label>
                 <select class="form-select" id="taskAssignee" @bind="Task.Assigneeid">
                     <option value="">-- Select an Assignee --</option>
-                    @foreach (var user in SiteUsers) {
+                    @foreach (var user in SiteUsers.Where(su => ProjectUsers.Any(pu => pu.Userid == su.Id && pu.Projectid == ProjectId))) {
                         <option value="@user.Id">@($"{user.Fullname} - {user.Position}")</option>
                     }
                 </select>
@@ -72,8 +72,10 @@
     public EventCallback OnTaskSaved { get; set; }
 
     public bool IsVisible { get; set; } = false;
+    public int ProjectId { get; set; }
     public Projecttask Task { get; set; } = new();
     public List<Siteuser> SiteUsers { get; set; } = new();
+    public List<Projectuser> ProjectUsers { get; set; } = new();
 
     private async Task LoadSiteUsersAsync () {
         try {
@@ -84,16 +86,29 @@
         }
     }
 
+    private async Task LoadProjectUsersAsync() {
+        try {
+            ProjectUsers = await DbContext.Projectusers.ToListAsync();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error loading project users: {ex.Message}");
+        }
+    }
+
     public async void Show (Projecttask task) {
         await LoadSiteUsersAsync();
+        await LoadProjectUsersAsync();
         Task = task;
+        ProjectId = task.Projectid;
         IsVisible = true;
         StateHasChanged();
     }
 
     public async void Show (int projectId) {
         await LoadSiteUsersAsync();
+        await LoadProjectUsersAsync();
         Task = new Projecttask { Projectid = projectId };
+        ProjectId = projectId;
         IsVisible = true;
         StateHasChanged();
     }

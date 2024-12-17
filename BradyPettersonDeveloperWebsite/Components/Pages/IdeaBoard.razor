@@ -19,12 +19,37 @@
     }
 </select>
 
+@if (SelectedProject != null) {
+    <h2>@SelectedProject.Projectname Project Ideas</h2>
+    <div class="Idea-Board">
+        @foreach (var feature in Features) {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@feature.Featurename</h5>
+                    <p class="card-text">@feature.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+} else {
+    <p>Please select a project to view the idea board.</p>
+
+}
+
 @code {
     public List<Project> Projects { get; set; } = new();
     private List<Feature> Features { get; set; } = new();
 
     private int? selectedProjectId { get; set; }
     private Project? SelectedProject { get; set; }
+
+    protected override async Task OnInitializedAsync () {
+        await LoadProjectsAsync();
+    }
+
+    private async Task LoadProjectsAsync () {
+        Projects = await DbContext.Projects.ToListAsync();
+    }
 
     private async Task OnProjectSelected (ChangeEventArgs e) {
         if (int.TryParse(e.Value?.ToString(), out var projectId)) {
