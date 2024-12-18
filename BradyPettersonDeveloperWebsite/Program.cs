@@ -9,7 +9,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Retrieve the connection string from configuration (Azure Connection Strings)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("POSTGRESQLCONNSTR_DefaultConnection");
+if (string.IsNullOrEmpty(connectionString))
+    connectionString = Environment.GetEnvironmentVariable("POSTGRESQLCONNSTR_DefaultConnection");
 
 // Register AppDbContext with PostgreSQL provider
 builder.Services.AddDbContext<AppDbContext>(options =>
