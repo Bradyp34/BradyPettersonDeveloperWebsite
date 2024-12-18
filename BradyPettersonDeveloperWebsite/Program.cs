@@ -9,10 +9,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Retrieve the connection string from configuration (Azure Connection Strings)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Debug log to verify the connection string (optional)
-Console.WriteLine($"Connection String: {connectionString}");
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = "Host=autorack.proxy.rlwy.net;Database=railway;Username=postgres;Password=IleihbkJeFYVgwiyrKslhdHgjhwQXoFW;Port=38989;CommandTimeout=600";
 
 // Register AppDbContext with PostgreSQL provider
 builder.Services.AddDbContext<AppDbContext>(options =>
