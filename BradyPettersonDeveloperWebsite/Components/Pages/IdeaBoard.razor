@@ -20,7 +20,7 @@
 </select>
 
 @if (SelectedProject != null) {
-    <h2>@SelectedProject.Projectname - Idea Board</h2>
+    <h2>@SelectedProject.Projectname</h2>
 
     <div class="d-flex justify-content-center mt-4">
         <button class="btn btn-success" @onclick="() => OpenFeatureModal(selectedProjectId ?? 0)">

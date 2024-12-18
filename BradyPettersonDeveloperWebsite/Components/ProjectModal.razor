@@ -1,7 +1,6 @@
-﻿@rendermode InteractiveServer
-@inject AppDbContext DbContext
-@using BradyPettersonDeveloperWebsite.Models
+﻿@using BradyPettersonDeveloperWebsite.Models
 @using Microsoft.EntityFrameworkCore
+@inject AppDbContext DbContext
 
 <div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
     <div class="modal-box">
@@ -33,20 +32,18 @@
             <!-- User Management Section -->
             <div class="mb-3">
                 <h5>Project Users</h5>
-
                 <ul class="list-group mb-3">
-                    @foreach (var projectUser in TempProjectUsers.OrderBy(pu => pu.Id)) {
+                    @foreach (var projectUser in TempProjectUsers.OrderBy(pu => pu.Userid)) {
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             @SiteUsers.FirstOrDefault(su => su.Id == projectUser.Userid)?.Fullname
                             <button class="btn btn-danger btn-sm" @onclick="() => RemoveUser(projectUser)">Remove</button>
                         </li>
                     }
                 </ul>
-
                 <div class="input-group mb-3">
                     <select class="form-select" @bind="SelectedUserId">
                         <option value="">-- Select a User --</option>
-                        @foreach (var user in SiteUsers.Where(su => !TempProjectUsers.Any(pu => pu.Userid == su.Id))) {
+                        @foreach (var user in SiteUsers.Where(su => !TempProjectUsers.Any(pu => pu.Userid == su.Id && pu.Projectid == Project.Id))) {
                             <option value="@user.Id">@user.Fullname</option>
                         }
                     </select>
@@ -55,28 +52,26 @@
             </div>
 
             <div class="mb-3">
+                <button class="btn btn-danger" id="deleteButton" @onclick="DeleteProject" style="margin-right: 1rem;">Delete</button>
                 <button class="btn btn-primary" id="saveButton" @onclick="SaveChanges">Save</button>
             </div>
         </div>
     </div>
 </div>
 
+
 @code {
     [Parameter]
     public EventCallback<Project> OnProjectSaved { get; set; }
 
     public bool IsVisible { get; set; }
-
     public Project Project { get; set; } = new Project();
-
     public List<Siteuser> SiteUsers { get; set; } = new List<Siteuser>();
     public List<Projectuser> ProjectUsers { get; set; } = new List<Projectuser>();
     private List<Projectuser> TempProjectUsers { get; set; } = new List<Projectuser>();
-
     private int? SelectedUserId { get; set; }
 
-    // Show method for projectId
-    public async void Show (int projectId) {
+    public async Task Show (int projectId) {
         if (projectId != 0) {
             Project = await DbContext.Projects.FindAsync(projectId) ?? new Project();
             if (Project.Id == 0) {
@@ -88,25 +83,19 @@
             Project = new Project();
         }
 
-        await LoadProjectUsersAsync();
         await LoadSiteUsersAsync();
-
-        // Create a temporary copy of the users for in-memory modifications
+        await LoadProjectUsersAsync();
         TempProjectUsers = ProjectUsers.ToList();
 
         IsVisible = true;
         StateHasChanged();
     }
 
-    // Show method for Project object
-    public async void Show (Project project) {
+    public async Task Show (Project project) {
         Project = project;
-        await LoadProjectUsersAsync();
         await LoadSiteUsersAsync();
-
-        // Create a temporary copy of the users for in-memory modifications
+        await LoadProjectUsersAsync();
         TempProjectUsers = ProjectUsers.ToList();
-
         IsVisible = true;
         StateHasChanged();
     }
@@ -152,36 +141,52 @@
         }
     }
 
-
     private void RemoveUser (Projectuser user) {
         TempProjectUsers.Remove(user);
         StateHasChanged();
     }
 
+    public async Task DeleteProject () {
+        try {
+            if (Project.Id != 0) {
+                var projectUsersToDelete = await DbContext.Projectusers
+                    .Where(pu => pu.Projectid == Project.Id)
+                    .ToListAsync();
+
+                if (projectUsersToDelete.Any()) {
+                    DbContext.Projectusers.RemoveRange(projectUsersToDelete);
+                }
+
+                DbContext.Projects.Remove(Project);
+                await DbContext.SaveChangesAsync();
+
+                IsVisible = false;
+                await OnProjectSaved.InvokeAsync(Project);
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error deleting project: {ex.Message}");
+        }
+    }
+
     public async Task SaveChanges () {
         try {
-            // Find users to remove: in ProjectUsers but not in TempProjectUsers
             var usersToRemove = ProjectUsers
                 .Where(pu => !TempProjectUsers.Any(tpu => tpu.Userid == pu.Userid))
                 .ToList();
 
-            // Find users to add: in TempProjectUsers but not in ProjectUsers
             var usersToAdd = TempProjectUsers
                 .Where(tpu => !ProjectUsers.Any(pu => pu.Userid == tpu.Userid))
                 .ToList();
 
-            // Remove users
             if (usersToRemove.Any()) {
                 DbContext.Projectusers.RemoveRange(usersToRemove);
             }
 
-            // Add new users (ensure Id is set to 0 to avoid conflicts)
             foreach (var user in usersToAdd) {
-                user.Id = 0;
                 DbContext.Projectusers.Add(user);
             }
 
-            // Save the project
             if (Project.Id != 0) {
                 DbContext.Projects.Update(Project);
             }

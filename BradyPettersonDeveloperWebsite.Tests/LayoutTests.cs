@@ -1,74 +1,52 @@
 using Bunit;
 using Xunit;
-using BradyPettersonDeveloperWebsite.Components.Layout;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
+using BradyPettersonDeveloperWebsite.Components.Layout; // Adjust to the actual namespace of your component
 
 public class LayoutTests : TestContext {
     [Fact]
-    public void NavMenu_RendersAllNavigationLinks () {
-        // Arrange
-        var component = RenderComponent<NavMenu>();
+    public void NavBar_ShouldContainBrandName () {
+        // Arrange: Render the component that contains the navbar
+        var cut = RenderComponent<NavMenu>(); // Replace 'NavMenu' with the actual component name
 
-        // Act
-        var navLinks = component.FindAll("a.nav-link");
+        // Act: Find the element representing the navbar brand
+        var brandElement = cut.Find("a.navbar-brand");
 
-        // Assert
-        Assert.Equal(4, navLinks.Count);
-        Assert.Contains(navLinks, link => link.TextContent.Contains("Home"));
-        Assert.Contains(navLinks, link => link.TextContent.Contains("Task List"));
-        Assert.Contains(navLinks, link => link.TextContent.Contains("Feature List"));
-        Assert.Contains(navLinks, link => link.TextContent.Contains("User Control"));
+        // Assert: Check that the brand link contains the correct text
+        Assert.Equal("BradyPetterson'sWebsite", brandElement.TextContent.Trim());
     }
 
     [Fact]
-    public void NavMenu_HomeLink_HasCorrectHref () {
-        // Arrange
-        var component = RenderComponent<NavMenu>();
+    public void NavBar_ShouldContainNavigationToggler () {
+        var cut = RenderComponent<NavMenu>();
 
-        // Act
-        var homeLink = component.Find("a.nav-link[href='']");
-
-        // Assert
-        Assert.NotNull(homeLink);
-        Assert.Contains("Home", homeLink.TextContent);
+        // The toggler is an <input type="checkbox" class="navbar-toggler" ...> element
+        var toggler = cut.Find("input.navbar-toggler");
+        Assert.NotNull(toggler);
+        Assert.Equal("checkbox", toggler.GetAttribute("type"));
     }
 
-    [Fact]
-    public void NavMenu_TaskListLink_HasCorrectHref () {
-        // Arrange
-        var component = RenderComponent<NavMenu>();
+    [Theory]
+    [InlineData("", "Home")]
+    [InlineData("projectManager", "Project Manager")]
+    [InlineData("taskList", "Task List")]
+    [InlineData("ideaBoard", "Idea Board")]
+    [InlineData("userControl", "User Control")]
+    public void NavBar_ShouldContainExpectedNavLinks (string expectedHref, string expectedText) {
+        var cut = RenderComponent<NavMenu>();
 
-        // Act
-        var taskListLink = component.Find("a.nav-link[href='taskList']");
+        // Find all NavLink elements
+        // Since NavLink is a Blazor component that renders as <a> underneath, we can look for `.nav-link`
+        var navLinks = cut.FindAll(".nav-link");
 
-        // Assert
-        Assert.NotNull(taskListLink);
-        Assert.Contains("Task List", taskListLink.TextContent);
-    }
+        // Ensure we can find the one we're looking for
+        var link = navLinks.FirstOrDefault(l => l.TextContent.Contains(expectedText));
+        Assert.NotNull(link);
 
-    [Fact]
-    public void NavMenu_FeatureListLink_HasCorrectHref () {
-        // Arrange
-        var component = RenderComponent<NavMenu>();
-
-        // Act
-        var featureListLink = component.Find("a.nav-link[href='featureList']");
-
-        // Assert
-        Assert.NotNull(featureListLink);
-        Assert.Contains("Feature List", featureListLink.TextContent);
-    }
-
-    [Fact]
-    public void NavMenu_UserControlLink_HasCorrectHref () {
-        // Arrange
-        var component = RenderComponent<NavMenu>();
-
-        // Act
-        var userControlLink = component.Find("a.nav-link[href='userControl']");
-
-        // Assert
-        Assert.NotNull(userControlLink);
-        Assert.Contains("User Control", userControlLink.TextContent);
+        // Verify that the href attribute matches what we expect
+        // Note: NavLink typically sets the href attribute on the underlying <a> tag
+        //       If your routing uses a different base path or a leading slash, adjust accordingly.
+        Assert.Equal(expectedHref, link.GetAttribute("href"));
     }
 }

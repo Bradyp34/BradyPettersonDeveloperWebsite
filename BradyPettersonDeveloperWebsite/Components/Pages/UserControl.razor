@@ -1,13 +1,85 @@
-﻿@page "/UserControl"
+﻿@page "/usercontrol"
 @rendermode InteractiveServer
 
 @using BradyPettersonDeveloperWebsite.Models
 @using Microsoft.EntityFrameworkCore
 @inject AppDbContext DbContext
-@inject NavigationManager NavigationManager
 
-<h1>User Control Center</h1>
+<PageTitle>User Control</PageTitle>
+
+<h3>User Control</h3>
+
+<p>This page displays a list of users. Click on a user to edit their details or use the button to add a new user.</p>
+
+<button class="btn btn-success mb-3" @onclick="() => OpenUserModal()">
+    <i class="bi bi-plus-lg"></i> Add User
+</button>
+
+@if (Users.Any()) {
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Username</th>
+                <th>Position</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Users) {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Fullname</td>
+                    <td>@user.Username</td>
+                    <td>@user.Position</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => OpenUserModal(user)">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else {
+    <p>No users found.</p>
+}
+
+<!-- Import the UserModal component -->
+<UserModal @ref="userModal" OnUserSaved="HandleUserSaved" />
 
 @code {
+    private UserModal? userModal;
 
+    public List<Siteuser> Users { get; set; } = new();
+
+    protected override async Task OnInitializedAsync () {
+        await LoadUsersAsync();
+    }
+
+    private async Task LoadUsersAsync () {
+        try {
+            Users = await DbContext.Siteusers
+                .OrderBy(u => u.Id) // Order by ID
+                .ToListAsync();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error loading users: {ex.Message}");
+        }
+    }
+
+    private void OpenUserModal (Siteuser user) {
+        userModal?.Show(user);
+    }
+
+    private void OpenUserModal () {
+        userModal?.Show();
+    }
+
+    private async Task HandleUserSaved () {
+        await LoadUsersAsync();
+        StateHasChanged();
+    }
 }

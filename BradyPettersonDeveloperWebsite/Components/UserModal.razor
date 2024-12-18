@@ -1,5 +1,134 @@
-﻿<h3>UserModal</h3>
+﻿@rendermode InteractiveServer
+@inject AppDbContext DbContext
+@using BradyPettersonDeveloperWebsite.Models
+@using Microsoft.EntityFrameworkCore
+
+<div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
+    <div class="modal-box">
+        <div class="modal-header">
+            @if (User.Id != 0) {
+                <h5 class="modal-title">Edit User</h5>
+            }
+            else {
+                <h5 class="modal-title">Add User</h5>
+            }
+            <button type="button" class="btn-close" @onclick="CloseModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            @if (User.Id != 0) {
+                <h6>ID: @User.Id</h6>
+            }
+
+            <div class="mb-3">
+                <label for="fullname" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="fullname"
+                       @bind="User.Fullname" />
+            </div>
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username"
+                       @bind="User.Username" />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password"
+                       @bind="User.Password" />
+            </div>
+
+            <div class="mb-3">
+                <label for="position" class="form-label">Position</label>
+                <input type="text" class="form-control" id="position"
+                       @bind="User.Position" />
+            </div>
+
+            <div class="d-flex justify-content-end">
+                @if (User.Id != 0) {
+                    <button class="btn btn-danger me-2" @onclick="DeleteUser">
+                        Delete
+                    </button>
+                }
+                <button class="btn btn-primary" @onclick="SaveChanges">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    [Parameter]
+    public EventCallback OnUserSaved { get; set; }
 
+    public bool IsVisible { get; set; } = false;
+    public Siteuser User { get; set; } = new();
+
+    // Show method for editing an existing user
+    public void Show (Siteuser user) {
+        User = DbContext.Siteusers.Find(user.Id) ?? new Siteuser();
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    // Show method for adding a new user
+    public void Show () {
+        User = new Siteuser();
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    // Close the modal
+    public void CloseModal () {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    // Save changes (add or update user)
+    public async Task SaveChanges () {
+        try {
+            if (User.Id == 0) {
+                // New user: add to DbContext
+                await DbContext.Siteusers.AddAsync(User);
+            }
+            else {
+                // Existing user: EF Core is tracking this instance, so no need to call Update
+                // Changes are automatically detected
+            }
+
+            await DbContext.SaveChangesAsync();
+
+            CloseModal();
+
+            // Notify parent component
+            if (OnUserSaved.HasDelegate) {
+                await OnUserSaved.InvokeAsync(null);
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error saving user: {ex.Message}");
+            // Optionally, display an error message to the user
+        }
+    }
+
+    // Delete user
+    public async Task DeleteUser () {
+        try {
+            if (User.Id != 0) {
+                DbContext.Siteusers.Remove(User);
+                await DbContext.SaveChangesAsync();
+
+                CloseModal();
+
+                // Notify parent component
+                if (OnUserSaved.HasDelegate) {
+                    await OnUserSaved.InvokeAsync(null);
+                }
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error deleting user: {ex.Message}");
+            // Optionally, display an error message to the user
+        }
+    }
 }

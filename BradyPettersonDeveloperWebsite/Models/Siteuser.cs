@@ -7,11 +7,11 @@ public partial class Siteuser
 {
     public int Id { get; set; }
 
-    public string? Fullname { get; set; }
+    public string Fullname { get; set; } = null!;
 
-    public string? Username { get; set; }
+    public string Username { get; set; } = null!;
 
-    public string? Password { get; set; }
+    public string Password { get; set; } = null!;
 
     public string? Position { get; set; }
 }

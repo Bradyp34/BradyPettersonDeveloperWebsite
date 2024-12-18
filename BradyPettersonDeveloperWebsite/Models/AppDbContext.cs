@@ -72,11 +72,10 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Projectuser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("projectuser_pkey");
+            entity
+                .HasNoKey()
+                .ToTable("projectuser");
 
-            entity.ToTable("projectuser");
-
-            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Projectid).HasColumnName("projectid");
             entity.Property(e => e.Userid).HasColumnName("userid");
         });
@@ -96,11 +95,10 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Taskuser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("taskuser_pkey");
+            entity
+                .HasNoKey()
+                .ToTable("taskuser");
 
-            entity.ToTable("taskuser");
-
-            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Taskid).HasColumnName("taskid");
             entity.Property(e => e.Userid).HasColumnName("userid");
         });
