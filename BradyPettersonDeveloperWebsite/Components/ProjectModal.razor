@@ -1,6 +1,8 @@
-﻿@using BradyPettersonDeveloperWebsite.Models
-@using Microsoft.EntityFrameworkCore
+﻿@rendermode InteractiveServer
 @inject AppDbContext DbContext
+@using BradyPettersonDeveloperWebsite.Models
+@using Microsoft.EntityFrameworkCore
+@namespace BradyPettersonDeveloperWebsite.Components
 
 <div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
     <div class="modal-box">
