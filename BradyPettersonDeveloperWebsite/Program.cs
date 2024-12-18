@@ -1,5 +1,5 @@
 using BradyPettersonDeveloperWebsite.Components;
-using BradyPettersonDeveloperWebsite.Models; // Ensure this namespace is included for AppDbContext
+using BradyPettersonDeveloperWebsite.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,13 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Retrieve the connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                       ?? Environment.GetEnvironmentVariable("DefaultConnection");
+                       ?? Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
+
+// Debug log to verify the connection string
+Console.WriteLine($"Connection String: {connectionString}");
 
 // Register AppDbContext with PostgreSQL provider
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
-
 
 builder.Services.AddTransient<DatabaseWarmUpService>();
 
