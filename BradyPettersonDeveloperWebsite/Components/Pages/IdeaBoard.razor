@@ -33,10 +33,10 @@
 
     <div class="kanban-board">
         <div class="kanban-columns">
-            @RenderMoscowColumn("Must Have", Features.Where(f => f.Moscow == 1 && f.Projectid == selectedProjectId).ToList(), "text-danger")
-            @RenderMoscowColumn("Should Have", Features.Where(f => f.Moscow == 2 && f.Projectid == selectedProjectId).ToList(), "text-warning")
-            @RenderMoscowColumn("Could Have", Features.Where(f => f.Moscow == 3 && f.Projectid == selectedProjectId).ToList(), "text-success")
-            @RenderMoscowColumn("Won't Have", Features.Where(f => f.Moscow == 4 && f.Projectid == selectedProjectId).ToList(), "text-secondary")
+            @RenderMoscowColumn("Must Have", Features.Where(f => f.Moscow == 1 && f.Projectid == selectedProjectId).OrderBy(f => f.Id).ToList(), "text-danger")
+            @RenderMoscowColumn("Should Have", Features.Where(f => f.Moscow == 2 && f.Projectid == selectedProjectId).OrderBy(f => f.Id).ToList(), "text-warning")
+            @RenderMoscowColumn("Could Have", Features.Where(f => f.Moscow == 3 && f.Projectid == selectedProjectId).OrderBy(f => f.Id).ToList(), "text-success")
+            @RenderMoscowColumn("Won't Have", Features.Where(f => f.Moscow == 4 && f.Projectid == selectedProjectId).OrderBy(f => f.Id).ToList(), "text-secondary")
         </div>
     </div>
 }

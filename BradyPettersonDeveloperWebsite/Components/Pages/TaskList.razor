@@ -51,11 +51,29 @@ else {
 
     private int? selectedProjectId { get; set; }
     private Project? SelectedProject { get; set; }
+    private List<Projecttask> ToDoTasks => Tasks
+    .Where(t => t.Stage == 1)
+    .OrderBy(t => t.Due)
+    .ThenBy(t => t.Id)
+    .ToList();
 
-    private List<Projecttask> ToDoTasks => Tasks.Where(t => t.Stage == 1).ToList();
-    private List<Projecttask> InProgressTasks => Tasks.Where(t => t.Stage == 2).ToList();
-    private List<Projecttask> InReviewTasks => Tasks.Where(t => t.Stage == 3).ToList();
-    private List<Projecttask> DoneTasks => Tasks.Where(t => t.Stage == 4).ToList();
+    private List<Projecttask> InProgressTasks => Tasks
+    .Where(t => t.Stage == 2)
+    .OrderBy(t => t.Due)
+    .ThenBy(t => t.Id)
+    .ToList();
+
+    private List<Projecttask> InReviewTasks => Tasks
+    .Where(t => t.Stage == 3)
+    .OrderBy(t => t.Due)
+    .ThenBy(t => t.Id)
+    .ToList();
+
+    private List<Projecttask> DoneTasks => Tasks
+    .Where(t => t.Stage == 4)
+    .OrderBy(t => t.Due)
+    .ThenBy(t => t.Id)
+    .ToList();
 
     protected override async Task OnInitializedAsync () {
         await LoadProjectsAsync();
