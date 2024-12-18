@@ -13,7 +13,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Register AppDbContext with PostgreSQL provider
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString(connectionString!)));
+    options.UseNpgsql(connectionString));
+
 
 builder.Services.AddTransient<DatabaseWarmUpService>();
 
