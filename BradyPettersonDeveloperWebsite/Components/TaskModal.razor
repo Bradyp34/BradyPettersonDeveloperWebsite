@@ -60,7 +60,10 @@
                 <input type="date" class="form-control" id="endDate" @bind="Task.Due" />
             </div>
 
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-between">
+                @if (Task.Id != 0) {
+                    <button class="btn btn-danger" @onclick="DeleteTask">Delete</button>
+                }
                 <button class="btn btn-primary" @onclick="SaveChanges">Save</button>
             </div>
         </div>
@@ -86,7 +89,7 @@
         }
     }
 
-    private async Task LoadProjectUsersAsync() {
+    private async Task LoadProjectUsersAsync () {
         try {
             ProjectUsers = await DbContext.Projectusers.ToListAsync();
         }
@@ -140,7 +143,23 @@
         }
         catch (Exception ex) {
             Console.WriteLine($"Error saving task: {ex.Message}");
-            // Optionally, display an error message to the user
+        }
+    }
+
+    public async Task DeleteTask () {
+        try {
+            DbContext.Projecttasks.Remove(Task);
+            await DbContext.SaveChangesAsync();
+
+            // Notify parent component that a task has been deleted
+            if (OnTaskSaved.HasDelegate) {
+                await OnTaskSaved.InvokeAsync(null);
+            }
+
+            CloseModal();
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error deleting task: {ex.Message}");
         }
     }
 }
