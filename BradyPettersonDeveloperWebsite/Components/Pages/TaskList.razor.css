@@ -7,10 +7,18 @@
 
 .kanban-columns {
     display: flex;
-    flex-direction: row; /* Ensures columns are side by side */
+    flex-direction: row; /* Default: columns side by side */
     justify-content: space-between;
     gap: 1rem;
     width: 100%;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+/* Responsive stacking for smaller screens */
+@media (max-width: 768px) {
+    .kanban-columns {
+        flex-direction: column; /* Stack columns vertically */
+    }
 }
 
 .kanban-column {
@@ -23,6 +31,7 @@
     flex-direction: column;
     text-align: center;
     box-sizing: border-box; /* Ensures padding is included in the width */
+    max-width: 100%; /* Prevents overflow on smaller screens */
 }
 
     .kanban-column h5 {

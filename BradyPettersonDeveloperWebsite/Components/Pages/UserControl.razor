@@ -16,32 +16,34 @@
 </button>
 
 @if (Users.Any()) {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Full Name</th>
-                <th>Username</th>
-                <th>Position</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Users) {
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@user.Id</td>
-                    <td>@user.Fullname</td>
-                    <td>@user.Username</td>
-                    <td>@user.Position</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" @onclick="() => OpenUserModal(user)">
-                            Edit
-                        </button>
-                    </td>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Position</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var user in Users) {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Fullname</td>
+                        <td>@user.Username</td>
+                        <td>@user.Position</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" @onclick="() => OpenUserModal(user)">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 else {
     <p>No users found.</p>
