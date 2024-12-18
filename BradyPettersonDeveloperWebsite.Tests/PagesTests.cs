@@ -61,7 +61,7 @@ public class ProjectManagerTests : TestContext {
     }
 
     [Fact]
-    public void ProjectManager_HasNewTaskButton () {
+    public void ProjectManager_HasNewProjectButton () {
         // Arrange
         var context = Services.GetRequiredService<AppDbContext>();
         context.Database.EnsureDeleted();
@@ -70,10 +70,10 @@ public class ProjectManagerTests : TestContext {
         // No projects are actually needed for this test
         var cut = RenderComponent<ProjectManager>();
 
-        // Assert: Check the "New Task" button presence
-        var newTaskButton = cut.Find("button.btn.btn-success");
-        Assert.NotNull(newTaskButton);
-        Assert.Contains("New Task", newTaskButton.TextContent);
+        // Assert: Check the "New Project" button presence
+        var newProjectButton = cut.Find("button.btn.btn-success");
+        Assert.NotNull(newProjectButton);
+        Assert.Contains("New Project", newProjectButton.TextContent);
     }
 
     [Fact]
