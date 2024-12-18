@@ -21,14 +21,37 @@
             <h3>@Project.Projectname</h3>
 
             <div class="mb-3">
-                <label for="projectName" class="form-label
-                ">Project Name</label>
+                <label for="projectName" class="form-label">Project Name</label>
                 <input type="text" class="form-control" id="projectName" @bind="Project.Projectname" />
             </div>
 
             <div class="mb-3">
                 <label for="projectDescription" class="form-label">Description</label>
                 <textarea class="form-control" id="projectDescription" @bind="Project.Description"></textarea>
+            </div>
+
+            <!-- User Management Section -->
+            <div class="mb-3">
+                <h5>Project Users</h5>
+
+                <ul class="list-group mb-3">
+                    @foreach (var projectUser in TempProjectUsers.OrderBy(pu => pu.Id)) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @SiteUsers.FirstOrDefault(su => su.Id == projectUser.Userid)?.Fullname
+                            <button class="btn btn-danger btn-sm" @onclick="() => RemoveUser(projectUser)">Remove</button>
+                        </li>
+                    }
+                </ul>
+
+                <div class="input-group mb-3">
+                    <select class="form-select" @bind="SelectedUserId">
+                        <option value="">-- Select a User --</option>
+                        @foreach (var user in SiteUsers.Where(su => !TempProjectUsers.Any(pu => pu.Userid == su.Id))) {
+                            <option value="@user.Id">@user.Fullname</option>
+                        }
+                    </select>
+                    <button class="btn btn-success" type="button" @onclick="AddUser">Add User</button>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -38,9 +61,8 @@
     </div>
 </div>
 
-
 @code {
-    [Parameter] 
+    [Parameter]
     public EventCallback<Project> OnProjectSaved { get; set; }
 
     public bool IsVisible { get; set; }
@@ -49,40 +71,59 @@
 
     public List<Siteuser> SiteUsers { get; set; } = new List<Siteuser>();
     public List<Projectuser> ProjectUsers { get; set; } = new List<Projectuser>();
+    private List<Projectuser> TempProjectUsers { get; set; } = new List<Projectuser>();
 
+    private int? SelectedUserId { get; set; }
+
+    // Show method for projectId
     public async void Show (int projectId) {
-        @if (projectId != 0) {
+        if (projectId != 0) {
             Project = await DbContext.Projects.FindAsync(projectId) ?? new Project();
             if (Project.Id == 0) {
                 CloseModal();
+                return;
             }
         }
         else {
             Project = new Project();
         }
+
         await LoadProjectUsersAsync();
         await LoadSiteUsersAsync();
+
+        // Create a temporary copy of the users for in-memory modifications
+        TempProjectUsers = ProjectUsers.ToList();
 
         IsVisible = true;
         StateHasChanged();
     }
 
+    // Show method for Project object
     public async void Show (Project project) {
+        Project = project;
         await LoadProjectUsersAsync();
         await LoadSiteUsersAsync();
-        Project = project;
+
+        // Create a temporary copy of the users for in-memory modifications
+        TempProjectUsers = ProjectUsers.ToList();
+
         IsVisible = true;
         StateHasChanged();
     }
 
     public void CloseModal () {
         IsVisible = false;
+        ProjectUsers = new List<Projectuser>();
+        TempProjectUsers = new List<Projectuser>();
+        SelectedUserId = null;
         StateHasChanged();
     }
 
     public async Task LoadProjectUsersAsync () {
         try {
-            ProjectUsers = await DbContext.Projectusers.ToListAsync();
+            ProjectUsers = await DbContext.Projectusers
+                .Where(pu => pu.Projectid == Project.Id)
+                .ToListAsync();
         }
         catch (Exception ex) {
             Console.WriteLine($"Error loading project users: {ex.Message}");
@@ -98,18 +139,63 @@
         }
     }
 
-    public async Task SaveChanges() {
-        if (Project.Id != 0) {
-            DbContext.Projects.Update(Project);
+    private void AddUser () {
+        if (SelectedUserId.HasValue && !TempProjectUsers.Any(pu => pu.Userid == SelectedUserId.Value)) {
+            var newUser = new Projectuser {
+                    Projectid = Project.Id,
+                    Userid = SelectedUserId.Value
+                };
+
+            TempProjectUsers.Add(newUser);
+            SelectedUserId = null;
+            StateHasChanged();
         }
-        else {
-            DbContext.Projects.Add(Project);
+    }
+
+
+    private void RemoveUser (Projectuser user) {
+        TempProjectUsers.Remove(user);
+        StateHasChanged();
+    }
+
+    public async Task SaveChanges () {
+        try {
+            // Find users to remove: in ProjectUsers but not in TempProjectUsers
+            var usersToRemove = ProjectUsers
+                .Where(pu => !TempProjectUsers.Any(tpu => tpu.Userid == pu.Userid))
+                .ToList();
+
+            // Find users to add: in TempProjectUsers but not in ProjectUsers
+            var usersToAdd = TempProjectUsers
+                .Where(tpu => !ProjectUsers.Any(pu => pu.Userid == tpu.Userid))
+                .ToList();
+
+            // Remove users
+            if (usersToRemove.Any()) {
+                DbContext.Projectusers.RemoveRange(usersToRemove);
+            }
+
+            // Add new users (ensure Id is set to 0 to avoid conflicts)
+            foreach (var user in usersToAdd) {
+                user.Id = 0;
+                DbContext.Projectusers.Add(user);
+            }
+
+            // Save the project
+            if (Project.Id != 0) {
+                DbContext.Projects.Update(Project);
+            }
+            else {
+                DbContext.Projects.Add(Project);
+            }
+
+            await DbContext.SaveChangesAsync();
+
+            IsVisible = false;
+            await OnProjectSaved.InvokeAsync(Project);
         }
-
-        await DbContext.SaveChangesAsync();
-
-        IsVisible = false;
-
-        await OnProjectSaved.InvokeAsync(Project);
+        catch (Exception ex) {
+            Console.WriteLine($"Error saving changes: {ex.Message}");
+        }
     }
 }

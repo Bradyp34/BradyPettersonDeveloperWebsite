@@ -76,9 +76,7 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("projectuser");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Projectid).HasColumnName("projectid");
             entity.Property(e => e.Userid).HasColumnName("userid");
         });
@@ -106,6 +104,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Taskid).HasColumnName("taskid");
             entity.Property(e => e.Userid).HasColumnName("userid");
         });
+        modelBuilder.HasSequence("projectuser_id_seq");
 
         OnModelCreatingPartial(modelBuilder);
     }

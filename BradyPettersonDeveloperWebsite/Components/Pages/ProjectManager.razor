@@ -59,7 +59,9 @@ else {
     }
 
     private async Task LoadProjectsAsync () {
-        Projects = await DbContext.Projects.ToListAsync();
+        Projects = await DbContext.Projects
+            .OrderBy(p => p.Id) // Ensure projects are ordered by Id
+            .ToListAsync();
     }
 
     private void OpenProjectModal (Project project) {

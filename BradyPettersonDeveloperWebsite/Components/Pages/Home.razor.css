@@ -1,0 +1,42 @@
+﻿.intro {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+h2 {
+    margin-top: 1rem;
+    color: #3a0647;
+}
+
+.skills ul, .projects ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+}
+
+.call-to-action a {
+    color: #0560ff;
+    text-decoration: underline;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #3a0647;
+    margin-bottom: 1rem;
+}
+
+.bio p, .projects p {
+    line-height: 1.6;
+}
+
+.contact-info {
+    list-style-type: none;
+    padding: 0;
+}
+
+.contact-info li {
+    margin-bottom: 0.5rem;
+}

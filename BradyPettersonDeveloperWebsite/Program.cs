@@ -12,6 +12,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddTransient<DatabaseWarmUpService>();
+
 // Build the app
 var app = builder.Build();
 

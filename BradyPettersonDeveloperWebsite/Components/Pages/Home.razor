@@ -1,9 +1,73 @@
 ﻿@page "/"
 
+@inject DatabaseWarmUpService WarmUpService
+
 <PageTitle>Home</PageTitle>
 
-<h1>Brady's Developer Website</h1>
+<h1 class="title">Welcome to Brady's Developer Website</h1>
 
-This website is designed to showcase the developer talents of Brady Petterson.
-You will find pages that contain tracking and helpful tools for the entire software development life cycle of a kanban team. 
-Please Explore!
+<p class="intro">
+    This website is designed to showcase the developer talents of <strong>Brady Petterson</strong>.
+    You will find tools, projects, and insights covering the entire software development life cycle of a kanban team.
+    Please explore and see how I can contribute to your organization's success!
+</p>
+
+<!-- Bio Section -->
+<section class="bio">
+    <h2>About Me</h2>
+    <p>
+        I'm a passionate software developer specializing in <strong>full-stack development</strong> using C#, Blazor, and SQL.
+        I enjoy creating efficient, maintainable, and scalable applications that solve real-world problems.
+    </p>
+</section>
+
+<!-- Skills Section -->
+<section class="skills">
+    <h2>Skills & Technologies</h2>
+    <ul>
+        <li>C#, .NET, Blazor</li>
+        <li>SQL Server, PostgreSQL, Entity Framework</li>
+        <li>Python, AI</li>
+        <li>HTML, CSS, JavaScript</li>
+        <li>Agile & Kanban Methodologies</li>
+        <li>Git, CI/CD Pipelines</li>
+    </ul>
+</section>
+
+<!-- Project Highlights -->
+<section class="projects">
+    <h2>Project Highlights</h2>
+    <ul>
+        <li>
+            <strong>
+                <a href="https://project-kx9fpcouz5ooc7bhgfavsq.streamlit.app/" target="_blank">
+                    Study Quiz Generator:
+                </a>
+            </strong>
+            A tool that generates study quiz questions from PDF files using Python and AI.
+        </li>
+        <li>
+            <strong>Conversion Program:</strong> Efficiently handles large database migrations with optimized entity processing.
+        </li>
+    </ul>
+    <p>
+        Explore more of my projects on <a href="https://github.com/Bradyp34" target="_blank">GitHub</a>.
+    </p>
+</section>
+
+<!-- Call to Action -->
+<section class="call-to-action">
+    <h2>Let's Connect!</h2>
+    <p>Interested in my work? Reach out via:</p>
+    <ul class="contact-info">
+        <li><strong>Email:</strong> <a href="mailto:brady.petterson@gmail.com">brady.petterson@gmail.com</a></li>
+        <li><strong>Phone:</strong> <a href="tel:+16058095542">(605) 809-5542</a></li>
+        <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/bradypetterson/" target="_blank">linkedin.com/in/bradypetterson</a></li>
+    </ul>
+</section>
+
+@code {
+    protected override async Task OnInitializedAsync () {
+        await WarmUpService.WarmUpAsync();
+    }
+}
