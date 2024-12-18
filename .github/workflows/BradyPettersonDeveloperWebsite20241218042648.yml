@@ -23,9 +23,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
-      - name: Set Connection String Environment Variable
-        run: echo "DEFAULT_CONNECTION=${{ secrets.DEFAULT_CONNECTION }}" >> $GITHUB_ENV
-
       - name: Restore
         run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 

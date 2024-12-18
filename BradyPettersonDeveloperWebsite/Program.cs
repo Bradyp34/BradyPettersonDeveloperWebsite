@@ -8,11 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Retrieve the connection string
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                       ?? Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
+// Retrieve the connection string from configuration (Azure Connection Strings)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Debug log to verify the connection string
+// Debug log to verify the connection string (optional)
 Console.WriteLine($"Connection String: {connectionString}");
 
 // Register AppDbContext with PostgreSQL provider
