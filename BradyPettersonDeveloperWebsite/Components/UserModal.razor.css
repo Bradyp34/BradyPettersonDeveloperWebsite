@@ -1,5 +1,4 @@
-﻿/* Modal Backdrop */
-.modal-backdrop {
+﻿.modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -12,12 +11,10 @@
     z-index: 1050;
 }
 
-/* Modal Box */
-/* Updated Modal Box */
 .modal-box {
     background: #fff;
     width: 500px;
-    max-height: 90vh; /* Restrict the height to 90% of the viewport height */
+    max-height: 90vh;
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -27,17 +24,13 @@
     animation: fadeIn 0.3s ease-out;
 }
 
-/* Make Modal Body Scrollable */
 .modal-body {
-    flex: 1; /* Take up available space */
-    overflow-y: auto; /* Enable scrolling for overflow content */
+    flex: 1;
+    overflow-y: auto;
     font-size: 1rem;
-    padding-right: 0.5rem; /* Add padding to avoid scrollbar overlap */
+    padding-right: 0.5rem;
 }
 
-
-
-/* Fade-In Animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -50,7 +43,6 @@
     }
 }
 
-/* Modal Header */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -59,14 +51,13 @@
     margin-bottom: 1rem;
 }
 
-.modal-header h5 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: #3a0647;
-    font-weight: bold;
-}
+    .modal-header h5 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #3a0647;
+        font-weight: bold;
+    }
 
-/* Close Button */
 .btn-close {
     background: none;
     border: none;
@@ -75,11 +66,10 @@
     cursor: pointer;
 }
 
-.btn-close:hover {
-    color: #333;
-}
+    .btn-close:hover {
+        color: #333;
+    }
 
-/* Form Styling */
 .form-label {
     font-weight: bold;
     color: #555;
@@ -95,7 +85,6 @@
     margin-bottom: 1rem;
 }
 
-/* Buttons Styling */
 .btn-primary {
     background-color: #007bff;
     border-color: #007bff;
@@ -126,7 +115,6 @@
         border-color: #bd2130;
     }
 
-/* Button Group Styling */
 .d-flex {
     display: flex;
     justify-content: flex-end;

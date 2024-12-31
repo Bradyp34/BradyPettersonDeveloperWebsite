@@ -15,6 +15,7 @@
     <i class="bi bi-plus-lg"></i> Add User
 </button>
 
+<!-- Display a responsive table of the users -->
 @if (Users.Any()) {
     <div class="table-responsive">
         <table class="table table-striped">
@@ -64,7 +65,7 @@ else {
     private async Task LoadUsersAsync () {
         try {
             Users = await DbContext.Siteusers
-                .OrderBy(u => u.Id) // Order by ID
+                .OrderBy(u => u.Id)
                 .ToListAsync();
         }
         catch (Exception ex) {
@@ -72,10 +73,12 @@ else {
         }
     }
 
+    // Open the UserModal component to edit an existing user
     private void OpenUserModal (Siteuser user) {
         userModal?.Show(user);
     }
 
+    // Open the UserModal component to add a new user
     private void OpenUserModal () {
         userModal?.Show();
     }

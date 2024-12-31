@@ -28,6 +28,7 @@
             </button>
         </div>
         <br>
+        <!-- Render the columns of the tasks, passing the lists of tasks to display -->
         <div class="kanban-columns">
             @RenderKanbanColumn("To Do", ToDoTasks, "text-primary")
             @RenderKanbanColumn("In Progress", InProgressTasks, "text-warning")
@@ -83,6 +84,7 @@ else {
         Projects = await DbContext.Projects.ToListAsync();
     }
 
+    // Handle when a project is selected from the dropdown
     private async Task OnProjectSelected (ChangeEventArgs e) {
         if (int.TryParse(e.Value?.ToString(), out var projectId)) {
             selectedProjectId = projectId;
@@ -104,10 +106,12 @@ else {
         .ToListAsync();
     }
 
+    // Open the TaskModal to edit an existing task
     private void OpenTaskModal (Projecttask task) {
         taskModal?.Show(task);
     }
 
+    // Open the TaskModal to add a new task
     private void OpenTaskModal (int projectId) {
         taskModal?.Show(projectId);
     }
@@ -119,6 +123,7 @@ else {
         }
     }
 
+    // Render table column with tasks
     private RenderFragment RenderKanbanColumn (string title, List<Projecttask> tasks, string headerClass) => @<div class="kanban-column">
         <h5 class="@headerClass text-center mb-3">@title</h5>
         <div class="kanban-column-content">

@@ -4,6 +4,7 @@
 @using Microsoft.EntityFrameworkCore
 @namespace BradyPettersonDeveloperWebsite.Components
 
+<!-- This page displays as a pop-up with the necessary fields and a save/delete button -->
 <div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
     <div class="modal-box">
         <div class="modal-header">
@@ -73,18 +74,8 @@
     private List<Projectuser> TempProjectUsers { get; set; } = new List<Projectuser>();
     private int? SelectedUserId { get; set; }
 
-    public async Task Show (int projectId) {
-        if (projectId != 0) {
-            Project = await DbContext.Projects.FindAsync(projectId) ?? new Project();
-            if (Project.Id == 0) {
-                CloseModal();
-                return;
-            }
-        }
-        else {
-            Project = new Project();
-        }
-
+    // Show the modal with a new project
+    public async Task Show () {
         await LoadSiteUsersAsync();
         await LoadProjectUsersAsync();
         TempProjectUsers = ProjectUsers.ToList();
@@ -93,6 +84,7 @@
         StateHasChanged();
     }
 
+    // Show the modal with an existing project
     public async Task Show (Project project) {
         Project = project;
         await LoadSiteUsersAsync();

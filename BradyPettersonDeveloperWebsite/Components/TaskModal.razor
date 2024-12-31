@@ -4,6 +4,7 @@
 @using Microsoft.EntityFrameworkCore
 @namespace BradyPettersonDeveloperWebsite.Components
 
+<!-- This page displays as a pop-up with the necessary fields and a save/delete button -->
 <div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
     <div class="modal-box">
         <div class="modal-header">
@@ -99,6 +100,7 @@
         }
     }
 
+    // Show the modal with an existing task
     public async void Show (Projecttask task) {
         await LoadSiteUsersAsync();
         await LoadProjectUsersAsync();
@@ -108,6 +110,7 @@
         StateHasChanged();
     }
 
+    // Show the modal with a new task
     public async void Show (int projectId) {
         await LoadSiteUsersAsync();
         await LoadProjectUsersAsync();

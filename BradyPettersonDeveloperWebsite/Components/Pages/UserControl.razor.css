@@ -1,4 +1,4 @@
-﻿/* General Page Styling */
+﻿/* General styling */
 h3 {
     margin-bottom: 1.5rem;
     color: #3a0647;
@@ -10,7 +10,7 @@ p {
     color: #555;
 }
 
-/* Add User Button Styling */
+/* Add User Button */
 .btn-success {
     background-color: #28a745;
     border-color: #28a745;
@@ -20,17 +20,17 @@ p {
         margin-right: 0.5rem;
     }
 
-/* Table Container for Responsiveness */
+/* Responsive table container */
 .table-responsive {
     width: 100%;
-    overflow-x: auto; /* Enable horizontal scrolling */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin-top: 1rem;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Table Styling */
+/* Table styling */
 .table {
     width: 100%;
     background-color: #fff;
@@ -43,20 +43,20 @@ p {
         color: #fff;
         text-align: left;
         padding: 0.75rem;
-        white-space: nowrap; /* Prevents headers from wrapping */
+        white-space: nowrap;
     }
 
     .table td {
         padding: 0.75rem;
         border-bottom: 1px solid #ddd;
-        white-space: nowrap; /* Prevents content from wrapping */
+        white-space: nowrap;
     }
 
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f9f9f9;
 }
 
-/* Edit Button Styling */
+/* Edit button */
 .btn-primary {
     background-color: #007bff;
     border-color: #007bff;
@@ -67,9 +67,9 @@ p {
         background-color: #0056b3;
     }
 
-/* Responsive Adjustments */
+/* Mobile adjustments */
 @media (max-width: 768px) {
     .btn-success {
-        width: 100%; /* Make the button full-width on mobile */
+        width: 100%;
     }
 }

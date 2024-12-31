@@ -4,6 +4,7 @@
 @using Microsoft.EntityFrameworkCore
 @namespace BradyPettersonDeveloperWebsite.Components
 
+<!-- This page displays as a pop-up with the necessary fields and a save/delete button -->
 <div class="modal-backdrop" style="@(IsVisible ? "display: flex;" : "display: none;")">
     <div class="modal-box">
         <div class="modal-header">
@@ -60,6 +61,7 @@
     public List<Siteuser> SiteUsers { get; set; } = new List<Siteuser>();
     public List<Projectuser> ProjectUsers { get; set; } = new List<Projectuser>();
 
+    // Show the modal with a new feature
     public async void Show (int projectid) {
         await LoadSiteUsersAsync();
         await LoadProjectUsersAsync();
@@ -69,6 +71,7 @@
         StateHasChanged();
     }
     
+    // Show the modal with an existing feature
     public async void Show (Feature feature) {
         await LoadSiteUsersAsync();
         await LoadProjectUsersAsync();

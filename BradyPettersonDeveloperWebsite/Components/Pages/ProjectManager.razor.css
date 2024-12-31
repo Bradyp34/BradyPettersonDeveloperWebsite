@@ -1,11 +1,4 @@
-﻿/* Container styles */
-.project-manager-container {
-    padding: 2rem;
-    background-color: #f8f9fa;
-}
-
-/* Table styles */
-.table-striped {
+﻿.table-striped {
     background-color: #ffffff;
     border: 1px solid #ddd;
 }
@@ -23,22 +16,3 @@
     .table-striped tbody tr:hover {
         background-color: #e0f0ff;
     }
-
-/* Project name link */
-.project-link {
-    color: #0056b3;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-    .project-link:hover {
-        color: #003f7f;
-        text-decoration: underline;
-    }
-
-/* No projects found message */
-.no-projects {
-    font-style: italic;
-    color: #888888;
-    text-align: center;
-}

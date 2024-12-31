@@ -30,7 +30,7 @@
         </button>
     </div>
     <br />
-
+    <!-- Render columns of a table with the given data -->
     <div class="kanban-board">
         <div class="kanban-columns">
             @RenderMoscowColumn("Must Have", Features.Where(f => f.Moscow == 1 && f.Projectid == selectedProjectId).OrderBy(f => f.Id).ToList(), "text-danger")
@@ -62,11 +62,13 @@ else {
     private async Task LoadProjectsAsync () {
         Projects = await DbContext.Projects.ToListAsync();
     }
-
+    
+    // Open the modal with the given feature
     private void OpenFeatureModal (Feature feature) {
         featureModal?.Show(feature);
     }
 
+    // Open the modal to add a new feature to the given project
     private void OpenFeatureModal (int projectId) {
         featureModal?.Show(projectId);
     }
@@ -78,6 +80,7 @@ else {
         }
     }
 
+    // Handle the project selection
     private async Task OnProjectSelected (ChangeEventArgs e) {
         if (int.TryParse(e.Value?.ToString(), out var projectId)) {
             selectedProjectId = projectId;
@@ -99,6 +102,7 @@ else {
         .ToListAsync();
     }
 
+    // Render a column for the table
     private RenderFragment RenderMoscowColumn (string title, List<Feature> features, string headerClass) => @<div class="kanban-column">
         <h5 class="@headerClass text-center mb-3">@title</h5>
         <div class="kanban-column-content">
