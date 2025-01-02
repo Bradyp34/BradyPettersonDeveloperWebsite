@@ -420,7 +420,7 @@ public class ProjectManagerTests : TestContext {
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
-        await cut.InvokeAsync(() => cut.Instance.Show(0)); // New project (no ID)
+        await cut.InvokeAsync(() => cut.Instance.Show()); // New project (no ID)
 
         var header = cut.Find(".modal-title");
         Assert.Equal("New Project", header.TextContent.Trim());
@@ -440,7 +440,7 @@ public class ProjectManagerTests : TestContext {
         var cut = RenderComponent<ProjectModal>(parameters => parameters
             .Add(p => p.OnProjectSaved, EventCallback.Factory.Create<Project>(this, (Project p) => onProjectSavedCalled = true)));
 
-        await cut.InvokeAsync(() => cut.Instance.Show(0)); // New project
+        await cut.InvokeAsync(() => cut.Instance.Show()); // New project
         cut.Find("#projectName").Change("New Project Name");
         cut.Find("#projectDescription").Change("A new description");
 
@@ -473,7 +473,7 @@ public class ProjectManagerTests : TestContext {
         var cut = RenderComponent<ProjectModal>(parameters => parameters
             .Add(p => p.OnProjectSaved, EventCallback.Factory.Create<Project>(this, (Project p) => onProjectSavedCalled = true)));
 
-        await cut.InvokeAsync(() => cut.Instance.Show(existingProject.Id));
+        await cut.InvokeAsync(() => cut.Instance.Show(existingProject));
 
         // Update fields
         cut.Find("#projectName").Change("Updated Name");
@@ -498,7 +498,7 @@ public class ProjectManagerTests : TestContext {
     [Fact]
     public async Task ProjectModal_CloseModal_HidesModal () {
         var cut = RenderComponent<ProjectModal>();
-        await cut.InvokeAsync(() => cut.Instance.Show(0));
+        await cut.InvokeAsync(() => cut.Instance.Show());
 
         var closeButton = cut.Find(".btn-close");
         closeButton.Click();
